@@ -5,6 +5,7 @@ import { GlobalService } from '../service/global.service';
 import { Router } from '@angular/router';
 import { MovieService } from '../service/movie.service';
 import { Movie } from '../models/movies';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -17,10 +18,13 @@ export class HomeComponent implements OnInit {
   userSub: Subscription;
   movies;
   selectedMovie: Movie;
+  movieInput: FormGroup;
+  isAddeditMode: Boolean;
 
-  constructor(private movieService: MovieService, private global: GlobalService, private router: Router) { }
+  constructor( private fb: FormBuilder,private movieService: MovieService, private global: GlobalService, private router: Router) { }
 
   ngOnInit() {
+    this.isAddeditMode = false;
     this.userSub = this.global.user.subscribe(
       me => { this.account = me }
     );
@@ -30,7 +34,28 @@ export class HomeComponent implements OnInit {
     } else {
       this.router.navigate(['/login']);
     }
+    this.movieInput = this.fb.group({
+      title: ['', Validators.required],
+      description: ['', Validators.required],
+    });
   }
+addMovieClicked() {
+ this.selectedMovie = null;
+ this.isAddeditMode =true;
+}
+submitMovie(){
+  this.movieService.addMovie(this.movieInput.value).subscribe(
+    response => {
+      this.movies.push(response);
+      console.log('movies', response);
+      this.isAddeditMode = false;
+      this.movieInput.reset;
+    },
+    error => {
+      console.log('error', error);
+    }
+  );
+}
   getMovies() {
     this.movieService.getMovies().subscribe(
       response => {
