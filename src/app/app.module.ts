@@ -19,6 +19,7 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { HomeComponent } from './home/home.component';
+import { GlobalService} from './service/global.service';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,9 @@ import { HomeComponent } from './home/home.component';
     ReactiveFormsModule
 
   ],
-  providers: [],
+  providers: [
+    GlobalService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

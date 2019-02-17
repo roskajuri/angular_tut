@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { User } from '../models/user';
+import { Subscription } from 'rxjs';
+import { GlobalService } from '../service/global.service';
 
 @Component({
   selector: 'app-home',
@@ -7,9 +10,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
-  constructor() { }
+  account: User = new User();
+  userSub: Subscription;
+
+  constructor(private global: GlobalService, ) { }
 
   ngOnInit() {
+    this.userSub = this.global.user.subscribe(
+      me => {
+        this.account = me;
+        console.log('me', me)
+      }
+    );
   }
 
 }
